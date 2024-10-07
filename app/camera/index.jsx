@@ -1,6 +1,7 @@
 import {useState, useRef} from 'react'
 import {View, StyleSheet, Text, Image, Button} from 'react-native'
 import { CameraView, useCameraPermissions } from 'expo-camera'
+import * as MediaLibrary from 'expo-media-library'
 
 export default function Camera() {
   const [permissao, pedirPermissao] = useCameraPermissions()
@@ -32,6 +33,11 @@ export default function Camera() {
       )
   }
 
+  const salvarFoto = () => {
+      MediaLibrary.saveToLibraryAsync(foto.uri)
+      setFoto(null)
+  }
+
 
 
   return (
@@ -39,6 +45,8 @@ export default function Camera() {
     {foto ? 
       <View>
         <Image source={{uri: foto.uri}} style={styles.foto}></Image>
+        <Button title='Descartar foto' onPress={() => setFoto(null)}/>
+        <Button title='Salvar foto' onPress={salvarFoto}/>
       </View> :
     <CameraView facing={'back'} style={styles.camera} ref={cameraRef}>
       <Button title='Tirar foto' onPress={tirarFoto}/>
