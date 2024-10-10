@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { View, StyleSheet, Text, Image, Button, Pressable, ImageBackground } from 'react-native'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import * as MediaLibrary from 'expo-media-library'
+import * as Linking from 'expo-linking'
 
 export default function Camera() {
   const [permissao, pedirPermissao] = useCameraPermissions()
@@ -23,7 +24,7 @@ export default function Camera() {
   }
   
 
-  const trocaCamera = () => {
+  const trocarCamera = () => {
     setLado(lado == 'back' ? 'front' : 'back')
   }
 
@@ -55,24 +56,25 @@ export default function Camera() {
       <ImageBackground source={{ uri: foto.uri }} resizeMode="cover" style={styles.foto}>
         <View style={styles.postPicActions}>
           <Pressable onPress={() => { setFoto(null) }}>
-            <Image style={{ height: 90, width: 90 }} source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2067/2067754.png' }}></Image>
+            <Image style={{ height: 90, width: 90 }} source={{ uri: 'https://static.thenounproject.com/png/390423-200.png' }}></Image>
           </Pressable>
           <Pressable onPress={salvarFoto}>
-            <Image style={{ height: 50, width: 50 }} source={{ uri: 'https://static-00.iconduck.com/assets.00/save-icon-2048x2048-iovw4qr4.png' }}></Image>
+            <Image style={{ height: 50, width: 50 }} source={{ uri: 'https://icons.veryicon.com/png/o/miscellaneous/icon-pack/download-347.png' }}></Image>
           </Pressable>
         </View>
       </ImageBackground>
 
-                :
-      <View>
-        <Image source={{uri: foto.uri}} style={styles.foto}></Image>
-        <Button title='Descartar foto' onPress={() => setFoto(null)}/>
-        <Button title='Salvar foto' onPress={salvarFoto}/>
-      </View> :
-    <CameraView facing={'back'} style={styles.camera} ref={cameraRef}>
-      <Button title='Tirar foto' onPress={tirarFoto}/>
-      <Button title='inverter camera' onPress={trocaCamera}/>
-    </CameraView>
+      :
+      <CameraView facing={lado} style={styles.camera} ref={cameraRef} onBarcodeScanned={(data) => { qrCodeHandle(data) }} barcodeScannerSettings={{ barcodeTypes: ["qr"] }}>
+      <Pressable style={styles.shutterButton} onPress={tirarFoto}>
+          <Image style={{ height: 120, width: 120 }} source={{ uri: 'https://static.thenounproject.com/png/120101-200.png' }}></Image>
+      </Pressable>
+
+      <Pressable style={styles.rotateButton} onPress={trocarCamera}>
+          <Image style={{ height: 50, width: 50 }} source={{ uri: 'https://cdn-icons-png.freepik.com/256/15014/15014390.png?semt=ais_hybrid' }}></Image>
+      </Pressable>
+
+  </CameraView>
   }
   </View>
   )
@@ -81,7 +83,7 @@ export default function Camera() {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   textoPermissao:{
     textAlign: 'center'
@@ -91,6 +93,29 @@ const styles = StyleSheet.create({
   },
   foto:{
     width: '100%',
-    height: '100%'
-  }
+    height: '100%',
+    flex: 1
+  },
+  shutterButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: "95%",
+    justifyContent: 'center',
+    width: 120,
+    alignSelf: 'center',
+  },
+  rotateButton: {
+    top: -690,
+    left: 20,
+    width: 50,
+  },
+  postPicActions: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    left: -10,
+    height: "180%"
+}
 })
